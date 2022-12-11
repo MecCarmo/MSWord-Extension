@@ -1,0 +1,65 @@
+Sub Main()
+    UserForm1.Show
+End Sub
+
+Sub AddImg() 'Adiciona uma imagem
+    
+    Dim intChoice As Integer
+    Dim strPath As String
+    
+    'only allow the user to select one file
+    Application.FileDialog(msoFileDialogOpen).AllowMultiSelect = False
+    'make the file dialog visible to the user
+    intChoice = Application.FileDialog(msoFileDialogOpen).Show
+    'determine what choice the user made
+    If intChoice <> 0 Then
+        'get the file path selected by the user
+        strPath = Application.FileDialog( _
+            msoFileDialogOpen).SelectedItems(1)
+    End If
+    'move the cursor to the bookmark
+    'Selection.GoTo What:=wdGoToBookmark, Name:="bm1"
+    'insert the image
+    Selection.InlineShapes.AddPicture FileName:= _
+        strPath, LinkToFile:=False, _
+        SaveWithDocument:=True
+        
+End Sub
+
+Sub getalt() 'Caixa de input para cada Alt text das imagens
+    Dim oshp As InlineShape
+    Dim Message, Title, Default
+    Message = "Enter the image description"    ' Set prompt.
+    Title = "InputBox Demo"    ' Set title.
+    Default = "Image description"    ' Set default.
+    
+    For Each oshp In ActiveDocument.InlineShapes
+        oshp.Select
+    If oshp.AlternativeText <> "" Then
+        'MsgBox "Alt Text is " & oshp.AlternativeText
+    Else
+        oshp.AlternativeText = InputBox(Message, Title, Default)
+        'MsgBox "No Alt Text"
+    End If
+    Next
+End Sub
+
+
+Sub ConvertToTxt()
+With Application.Dialogs(wdDialogFileSaveAs)
+  .Name = Split(ActiveDocument.FullName, ".doc")(0) & ".txt"
+  .Format = wdFormatTextLineBreaks
+  .AddToMru = False
+  .Show
+End With
+'ActiveDocument.Close False
+End Sub
+
+
+Sub Macro1()
+'
+' Macro1 Macro
+    Main
+'
+'
+End Sub
